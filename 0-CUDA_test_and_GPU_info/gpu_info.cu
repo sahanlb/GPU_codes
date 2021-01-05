@@ -61,7 +61,7 @@ int main(int argc, char ** argv) {
            prop.maxGridSize[1], prop.maxGridSize[2]);
       printf(" ----- Cache Details -----\n");
       printf(" L2 cache size: %d\n", prop.l2CacheSize);
-      printf("L2 cache persistent protion: %d\n", prop.persistingL2CacheMaxSize);
+      printf("L2 cache persistent portion: %d\n", prop.persistingL2CacheMaxSize);
    }
 
    return 0;
