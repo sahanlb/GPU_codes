@@ -19,9 +19,10 @@ inline void gpuAssert(cudaError_t code, char *file, int line, bool abort=true)
 }
 
 #define PRINT_TIME              1
+#define FULL_RUN                0
 #define VALIDATE                0
-#define ROW_COUNT               2048
-#define COL_COUNT               2048
+#define ROW_COUNT               16384 
+#define COL_COUNT               16384 
 #define OMEGA                   1.0
 
 void initializeArray1D(float *arr, int len, int seed);
@@ -119,10 +120,15 @@ int main(int argc, char **argv){
 
   //block dimensions
   dim3 dimBlock(16,16,1);
-  dim3 dimGrid(128,128,1);
+  dim3 dimGrid(1024,1024,1);
   // Launch the kernel
   cudaEventRecord(kernel_start, 0);
+
+#if FULL_RUN
   for(int iter=0; iter<1000; iter++){
+#else
+  for(int iter=0; iter<10; iter++){
+#endif
      kernel_sor<<<dimGrid, dimBlock>>>(ROW_COUNT, COL_COUNT, d_x, d_y);
      //kernel_sor<<<dimGrid, dimBlock>>>(COL_COUNT, ROW_COUNT, d_x, d_y);
      cudaDeviceSynchronize();
