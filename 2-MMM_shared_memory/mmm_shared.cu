@@ -20,9 +20,10 @@ inline void gpuAssert(cudaError_t code, char *file, int line, bool abort=true)
 
 #define PRINT_TIME              1
 #define PRINT_MULT              0
-#define WIDTH                 	2048
+#define VALIDATE                1
+#define WIDTH                 	1024
 #define MATRIX_SIZE             WIDTH*WIDTH
-#define TOL                     10E14
+#define TOL                     10E15
 
 void initializeArray1D(float *arr, int len, int seed);
 struct timespec diff(struct timespec start, struct timespec end);
@@ -163,8 +164,7 @@ int main(int argc, char **argv){
 
   //block dimensions
   dim3 dimBlock(16,16,1);
-  //dim3 dimGrid(64,64,1); //1024
-  dim3 dimGrid(128,128,1); //2048
+  dim3 dimGrid(1024/16,1024/16,1);
   
 #if PRINT_TIME
   cudaEventRecord(kernel_start, 0);
@@ -192,10 +192,6 @@ int main(int argc, char **argv){
 
   // Transfer the results back to the host
   CUDA_SAFE_CALL(cudaMemcpy(h_P, d_P, allocSize, cudaMemcpyDeviceToHost));
-  /***********/
-  // Mem copy not captured by the timers because stop even is already distroyed. Fix this 
-  // issues if it is important to correctly measure total GPU time.
-  /***********/
 
 #if PRINT_TIME
   // Stop and destroy the timer
@@ -208,6 +204,7 @@ int main(int argc, char **argv){
 #endif
 
 
+#if VALIDATE
   /*Verification using host CPU*/
   float t;
 
@@ -220,7 +217,7 @@ int main(int argc, char **argv){
       h_P_verify[i*WIDTH + j] = t;
     }
   }
-
+#endif
 
   /*Debug print
   printf("\nPrint h_P\n");
@@ -241,7 +238,7 @@ int main(int argc, char **argv){
   *********************/
 
 
-
+#if VALIDATE
   //compare two metrices
   for(int i=0; i<WIDTH; i++){
     for(int j=0; j<WIDTH; j++){
@@ -254,6 +251,7 @@ int main(int argc, char **argv){
   }
 
   printf("Results of CPU and GPU calculations match with a tolerance of %f\n", TOL);
+#endif
 
   // Free-up device and host memory
   CUDA_SAFE_CALL(cudaFree(d_M));

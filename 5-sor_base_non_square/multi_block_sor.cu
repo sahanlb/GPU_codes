@@ -19,7 +19,7 @@ inline void gpuAssert(cudaError_t code, char *file, int line, bool abort=true)
 }
 
 #define PRINT_TIME              1
-#define FULL_RUN                0
+#define FULL_RUN                1
 #define VALIDATE                0
 #define ROW_COUNT               16384 
 #define COL_COUNT               16384 

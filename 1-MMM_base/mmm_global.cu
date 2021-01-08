@@ -18,7 +18,7 @@ inline void gpuAssert(cudaError_t code, char *file, int line, bool abort=true)
 
 #define PRINT_TIME              1
 #define VALIDATE                0
-#define WIDTH                 	2048
+#define WIDTH                   2048
 #define MATRIX_SIZE             WIDTH*WIDTH
 #define TOL                     10E14
 
@@ -114,7 +114,7 @@ int main(int argc, char **argv){
 
   //block dimensions
   dim3 dimBlock(16,16,1);
-  dim3 dimGrid(128,128,1); //2048
+  dim3 dimGrid(128,128,1);
   
 #if PRINT_TIME
   cudaEventRecord(kernel_start, 0);
@@ -161,7 +161,6 @@ int main(int argc, char **argv){
       for(int k=0; k<WIDTH; k++){
         t += h_M[i*WIDTH + k] * h_N[k*WIDTH + j];
       }
-      //h_P_verify[i*WIDTH + j] += t;
       h_P_verify[i*WIDTH + j] = t;
     }
   }
